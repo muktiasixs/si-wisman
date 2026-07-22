@@ -99,6 +99,13 @@
         
         /* Highcharts Tooltip */
         .highcharts-tooltip-box { display: none; }
+        
+        /* Skeleton Loader */
+        .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%); background-size: 200% 100%; animation: skeleton-loading 1.5s infinite; border-radius: 4px; }
+        @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-text { height: 12px; margin-bottom: 8px; width: 100%; }
+        .skeleton-text.short { width: 60%; margin-bottom: 0; }
+        .skeleton-bubble { min-width: 150px; padding: 1.25rem 1.125rem !important; }
     </style>
 </head>
 <body>
@@ -550,7 +557,11 @@
             var loadingId = 'loading-' + Date.now();
             $('#chatBox').append(`
                 <div class="chat-message ai" id="${loadingId}">
-                    <div class="bubble"><i class="fas fa-spinner fa-spin"></i> Berpikir...</div>
+                    <div class="bubble skeleton-bubble">
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text short"></div>
+                    </div>
                 </div>
             `);
             $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
