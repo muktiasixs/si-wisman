@@ -36,7 +36,8 @@ try {
     $app->useStoragePath($storage);
     $app->useBootstrapPath($storage.'/bootstrap');
 
-$app->handleRequest(Illuminate\Http\Request::capture());
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+    $app->handleRequest(Illuminate\Http\Request::capture());
 } catch (\Throwable $e) {
     echo "<h1>Vercel PHP Error</h1>";
     echo "<pre>" . (string) $e . "</pre>";
