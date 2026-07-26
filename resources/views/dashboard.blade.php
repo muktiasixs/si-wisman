@@ -67,7 +67,7 @@
         .footer-kemenlu a.hover-white:hover { color: #f59e0b !important; }
 
         /* Map & Table Styling */
-        #geomap { width: 100%; height: 500px; background-color: #e0f2fe; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+        #geomap { width: 100%; aspect-ratio: 1.7; background-color: #e0f2fe; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
         .table { color: #334155; margin-bottom: 0; }
         .table thead th { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 1rem; }
         .table tbody td { vertical-align: middle; border-bottom: 1px solid #e2e8f0; padding: 1rem; font-size: 0.95rem; }
@@ -711,18 +711,33 @@
 
     function drawRegionsMap() {
         if(!map) {
+            var bounds = [
+                [-60, -180], // Batas Bawah (Antartika di-cut)
+                [80, 180]    // Batas Atas
+            ];
             map = L.map('geomap', { 
                 zoomControl: false,
-                minZoom: 1
-            }).setView([20, 0], 2); // Matikan zoomControl default supaya tidak mengganggu
+                maxBounds: bounds,
+                maxBoundsViscosity: 1.0,
+                zoomSnap: 0
+            }); // Matikan zoomControl default supaya tidak mengganggu
             L.control.zoom({ position: 'bottomleft' }).addTo(map); // Pindahkan ke kiri bawah
 
             // Base map dari CartoDB (warna bersih, corporat, lengkap dengan NAMA NEGARA!)
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
                 subdomains: 'abcd',
-                maxZoom: 20
+                maxZoom: 20,
+                minZoom: 1,
+                noWrap: true
             }).addTo(map);
+            
+            map.fitBounds(bounds);
+            
+            // Auto resize jika layar berubah
+            $(window).on('resize', function() {
+                map.fitBounds(bounds);
+            });
         }
 
         $.ajax({
