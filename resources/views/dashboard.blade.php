@@ -67,7 +67,8 @@
         .footer-kemenlu a.hover-white:hover { color: #f59e0b !important; }
 
         /* Map & Table Styling */
-        #geomap { width: 100%; aspect-ratio: 1.7; background-color: #e0f2fe; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+        #geomap { width: 100%; height: 500px; background-color: #e0f2fe; border-bottom-left-radius: 12px; border-bottom-right-radius: 0; }
+        @media (max-width: 991px) { #geomap { border-bottom-left-radius: 0; border-bottom-right-radius: 0; } }
         .table { color: #334155; margin-bottom: 0; }
         .table thead th { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 1rem; }
         .table tbody td { vertical-align: middle; border-bottom: 1px solid #e2e8f0; padding: 1rem; font-size: 0.95rem; }
@@ -183,7 +184,52 @@
             </select>
         </div>
         <div class="card-body p-0">
-            <div id="geomap"></div>
+            <div class="row g-0">
+                <div class="col-lg-8 border-end">
+                    <div id="geomap"></div>
+                </div>
+                <div class="col-lg-4 bg-light d-flex flex-column" style="border-bottom-right-radius: 12px;">
+                    <div class="p-4 flex-grow-1">
+                        <div class="text-center text-muted mt-5 pt-4" id="geoDetailEmpty">
+                            <i class="fas fa-mouse-pointer fs-1 mb-3 text-secondary"></i>
+                            <h5 class="fw-bold text-secondary">Arahkan kursor ke peta</h5>
+                            <p class="small">Pilih negara untuk melihat rincian kunjungan wisatawan</p>
+                        </div>
+                        <div id="geoDetailContent" class="d-none">
+                            <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                                <img id="geoDetailFlag" src="" alt="Flag" class="me-3 border rounded shadow-sm" style="width: 50px; height: 35px; object-fit: cover;">
+                                <div>
+                                    <h5 class="mb-0 fw-bold text-primary" id="geoDetailName" style="letter-spacing: -0.01em;">Negara</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-white border-0 shadow-sm mb-3">
+                                <div class="card-body py-3">
+                                    <h6 class="text-muted text-uppercase small fw-bold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Wisatawan Bulan Ini</h6>
+                                    <h3 class="mb-0 fw-bold text-dark" id="geoDetailCurrent">0</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-white border-0 shadow-sm mb-3">
+                                <div class="card-body py-3">
+                                    <h6 class="text-muted text-uppercase small fw-bold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Bulan Sebelumnya</h6>
+                                    <h4 class="mb-0 fw-bold text-secondary" id="geoDetailPrevious">0</h4>
+                                </div>
+                            </div>
+
+                            <div class="card border-0 shadow-sm" id="geoDetailTrendCard">
+                                <div class="card-body py-3 text-white rounded">
+                                    <h6 class="text-white-50 text-uppercase small fw-bold mb-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">Tren Pertumbuhan</h6>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-arrow-up fs-4 me-2" id="geoDetailTrendIcon"></i>
+                                        <h4 class="mb-0 fw-bold" id="geoDetailTrendValue">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -786,6 +832,46 @@
                         onEachFeature: function(feature, layer) {
                             let fName = feature.properties.name ? feature.properties.name.toUpperCase().trim() : '';
                             let d = dataDict[fName];
+                            
+                            // Event Hover untuk Panel Samping
+                            layer.on('mouseover', function(e) {
+                                if (d) {
+                                    layer.setStyle({ weight: 2, color: '#f59e0b', fillOpacity: 1.0 });
+                                    
+                                    let meta = d.meta;
+                                    var flagUrl = 'https://flagcdn.com/w80/' + d.kode_negara.toLowerCase() + '.png';
+                                    var selisihFormatted = Math.abs(meta.selisih).toLocaleString('id-ID');
+                                    var isUp = meta.selisih >= 0;
+                                    
+                                    $('#geoDetailEmpty').addClass('d-none');
+                                    $('#geoDetailContent').removeClass('d-none');
+                                    
+                                    $('#geoDetailFlag').attr('src', flagUrl);
+                                    $('#geoDetailName').text(meta.nama);
+                                    $('#geoDetailCurrent').text(meta.mei.toLocaleString('id-ID'));
+                                    $('#geoDetailPrevious').text(meta.april.toLocaleString('id-ID'));
+                                    
+                                    let trendCard = $('#geoDetailTrendCard .card-body');
+                                    let trendIcon = $('#geoDetailTrendIcon');
+                                    $('#geoDetailTrendValue').text(selisihFormatted);
+                                    
+                                    if(isUp) {
+                                        trendCard.css('background-color', '#10b981');
+                                        trendIcon.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+                                    } else {
+                                        trendCard.css('background-color', '#ef4444');
+                                        trendIcon.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+                                    }
+                                }
+                            });
+
+                            layer.on('mouseout', function(e) {
+                                if (d) {
+                                    geojsonLayer.resetStyle(layer);
+                                    // Boleh ditambahkan logika untuk menghilangkan panel jika ingin
+                                }
+                            });
+
                             if (d) {
                                 let meta = d.meta;
                                 var flagUrl = 'https://flagcdn.com/24x18/' + d.kode_negara.toLowerCase() + '.png';
