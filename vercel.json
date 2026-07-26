@@ -17,6 +17,9 @@
             "dest": "/public/build/$1"
         },
         {
+            "handle": "filesystem"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
