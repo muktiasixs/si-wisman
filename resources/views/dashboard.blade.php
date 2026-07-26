@@ -182,11 +182,20 @@
                 <option value="afrika">Afrika</option>
                 <option value="oseania">Oseania</option>
             </select>
-        </div>
-        <div class="card-body p-0">
+        <div class="card-body p-0 position-relative">
+            <!-- Skeleton Loader -->
+            <div id="mapSkeleton" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center bg-light" style="z-index: 1000; border-bottom-left-radius: 12px;">
+                <div class="text-center">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="text-secondary fw-bold">Memuat Data Peta...</h5>
+                </div>
+            </div>
+            
             <div class="row g-0">
                 <div class="col-lg-8 border-end">
-                    <div id="geomap"></div>
+                    <div id="geomap" style="opacity: 0; transition: opacity 0.5s ease-in-out;"></div>
                 </div>
                 <div class="col-lg-4 bg-light d-flex flex-column" style="border-bottom-right-radius: 12px;">
                     <div class="p-4 flex-grow-1">
@@ -806,7 +815,8 @@
                 let maxVis = 0;
                 resData.forEach(item => {
                     let name = item.meta.nama.toUpperCase().trim();
-                    if(item.meta.mei > maxVis) maxVis = item.meta.mei;
+                    let visValue = parseInt(item.meta.mei) || 0;
+                    if(visValue > maxVis) maxVis = visValue;
                     
                     if(name === 'BRUNEI D' || name === 'BRUNEI') {
                         dataDict['BRUNEI'] = item;
@@ -844,7 +854,7 @@
                         style: function(feature) {
                             let fName = feature.properties.name ? feature.properties.name.toUpperCase().trim() : '';
                             if (dataDict[fName]) {
-                                let vis = dataDict[fName].meta.mei || 0;
+                                let vis = parseInt(dataDict[fName].meta.mei) || 0;
                                 return { fillColor: getColor(vis, maxVis), weight: 1, opacity: 1, color: '#ffffff', fillOpacity: 0.85 };
                             } else {
                                 // Negara tanpa data dibiarkan super transparan agar nama dari Base Map kelihatan jelas
