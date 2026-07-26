@@ -817,15 +817,16 @@
                     }
                 });
                 
-                // Fungsi untuk gradasi warna (kuning muda ke biru tua)
+                // Fungsi untuk gradasi warna (putih/biru sangat muda ke biru tua)
                 function getColor(v, max) {
                     let ratio = max > 0 ? (v / max) : 0;
-                    return ratio > 0.7 ? '#1e3a8a' :  // Biru Sangat Tua
-                           ratio > 0.4 ? '#1d4ed8' :  // Biru Tua
-                           ratio > 0.15 ? '#3b82f6' : // Biru Sedang
+                    return ratio > 0.8 ? '#0f4a8a' :  // Biru Sangat Tua (Brand)
+                           ratio > 0.6 ? '#1d4ed8' :  // Biru Tua
+                           ratio > 0.4 ? '#3b82f6' :  // Biru Sedang
+                           ratio > 0.2 ? '#60a5fa' :  // Biru Terang
                            ratio > 0.05 ? '#93c5fd' : // Biru Muda
-                           ratio > 0.01 ? '#fde047' : // Kuning
-                                          '#fef08a';  // Kuning Muda
+                           ratio > 0.01 ? '#dbeafe' : // Biru Sangat Muda
+                                          '#eff6ff';  // Hampir Putih
                 }
 
                 // Ambil file GeoJSON dunia yang sudah dilokalkan agar anti-blokir
@@ -857,7 +858,7 @@
                             // Event Hover untuk Panel Samping
                             layer.on('mouseover', function(e) {
                                 if (d) {
-                                    layer.setStyle({ weight: 2, color: '#ffffff', fillColor: '#10b981', fillOpacity: 1.0 });
+                                    layer.setStyle({ weight: 2, color: '#ffffff', fillColor: '#f59e0b', fillOpacity: 1.0 });
                                     
                                     let meta = d.meta;
                                     var flagUrl = 'https://flagcdn.com/w80/' + d.kode_negara.toLowerCase() + '.png';
