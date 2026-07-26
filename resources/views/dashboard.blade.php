@@ -801,10 +801,13 @@
                     return; // Biarkan base map kosong jika tidak ada data
                 }
 
-                // Siapkan data untuk lookup cepat
+                // Siapkan data untuk lookup cepat dan hitung max pengunjung
                 let dataDict = {};
+                let maxVis = 0;
                 resData.forEach(item => {
                     let name = item.meta.nama.toUpperCase().trim();
+                    if(item.meta.mei > maxVis) maxVis = item.meta.mei;
+                    
                     if(name === 'BRUNEI D' || name === 'BRUNEI') {
                         dataDict['BRUNEI'] = item;
                     } else if (name === 'PHILIPPINES') {
@@ -813,6 +816,17 @@
                         dataDict[name] = item;
                     }
                 });
+                
+                // Fungsi untuk gradasi warna (kuning muda ke biru tua)
+                function getColor(v, max) {
+                    let ratio = max > 0 ? (v / max) : 0;
+                    return ratio > 0.7 ? '#1e3a8a' :  // Biru Sangat Tua
+                           ratio > 0.4 ? '#1d4ed8' :  // Biru Tua
+                           ratio > 0.15 ? '#3b82f6' : // Biru Sedang
+                           ratio > 0.05 ? '#93c5fd' : // Biru Muda
+                           ratio > 0.01 ? '#fde047' : // Kuning
+                                          '#fef08a';  // Kuning Muda
+                }
 
                 // Ambil file GeoJSON dunia yang sudah dilokalkan agar anti-blokir
                 $.getJSON('/countries.geo.json', function(geoData) {
@@ -829,7 +843,8 @@
                         style: function(feature) {
                             let fName = feature.properties.name ? feature.properties.name.toUpperCase().trim() : '';
                             if (dataDict[fName]) {
-                                return { fillColor: '#0f4a8a', weight: 1, opacity: 1, color: '#ffffff', fillOpacity: 0.8 };
+                                let vis = dataDict[fName].meta.mei || 0;
+                                return { fillColor: getColor(vis, maxVis), weight: 1, opacity: 1, color: '#ffffff', fillOpacity: 0.85 };
                             } else {
                                 // Negara tanpa data dibiarkan super transparan agar nama dari Base Map kelihatan jelas
                                 return { fillColor: '#e2e8f0', weight: 1, opacity: 0, color: '#cbd5e1', fillOpacity: 0.0 };
@@ -842,7 +857,7 @@
                             // Event Hover untuk Panel Samping
                             layer.on('mouseover', function(e) {
                                 if (d) {
-                                    layer.setStyle({ weight: 2, color: '#f59e0b', fillOpacity: 1.0 });
+                                    layer.setStyle({ weight: 2, color: '#ffffff', fillColor: '#10b981', fillOpacity: 1.0 });
                                     
                                     let meta = d.meta;
                                     var flagUrl = 'https://flagcdn.com/w80/' + d.kode_negara.toLowerCase() + '.png';
