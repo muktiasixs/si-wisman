@@ -211,6 +211,7 @@
                 <option value="afrika">Afrika</option>
                 <option value="oseania">Oseania</option>
             </select>
+        </div>
         <div class="card-body p-0">
             <div class="row g-0">
                 <div class="col-lg-8 border-end">
@@ -846,16 +847,22 @@
                     }
                 });
                 
-                // Fungsi untuk gradasi warna (putih/biru sangat muda ke biru tua)
+                // Fungsi gradasi warna (logaritmik agar distribusi merata)
                 function getColor(v, max) {
-                    let ratio = max > 0 ? (v / max) : 0;
-                    return ratio > 0.8 ? '#0f4a8a' :  // Biru Sangat Tua (Brand)
-                           ratio > 0.6 ? '#1d4ed8' :  // Biru Tua
-                           ratio > 0.4 ? '#3b82f6' :  // Biru Sedang
-                           ratio > 0.2 ? '#60a5fa' :  // Biru Terang
-                           ratio > 0.05 ? '#93c5fd' : // Biru Muda
-                           ratio > 0.01 ? '#dbeafe' : // Biru Sangat Muda
-                                          '#eff6ff';  // Hampir Putih
+                    if(v <= 0 || max <= 0) return '#eff6ff';
+                    // Skala logaritmik: agar negara kecil tetap terlihat beda
+                    let logV = Math.log10(v + 1);
+                    let logMax = Math.log10(max + 1);
+                    let ratio = logV / logMax;
+                    return ratio > 0.9  ? '#0c3c78' :  // Biru Sangat Tua
+                           ratio > 0.8  ? '#0f4a8a' :  // Biru Tua (Brand)
+                           ratio > 0.7  ? '#1d4ed8' :  // Biru
+                           ratio > 0.6  ? '#3b82f6' :  // Biru Sedang
+                           ratio > 0.5  ? '#60a5fa' :  // Biru Terang
+                           ratio > 0.4  ? '#93c5fd' :  // Biru Muda
+                           ratio > 0.3  ? '#bfdbfe' :  // Biru Sangat Muda
+                           ratio > 0.2  ? '#dbeafe' :  // Biru Pucat
+                                          '#eff6ff';   // Hampir Putih
                 }
 
                 // Ambil file GeoJSON dunia yang sudah dilokalkan agar anti-blokir
