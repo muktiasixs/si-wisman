@@ -711,15 +711,9 @@
 
     function drawRegionsMap() {
         if(!map) {
-            var bounds = [
-                [-90, -180], // South West
-                [90, 180]    // North East
-            ];
             map = L.map('geomap', { 
                 zoomControl: false,
-                maxBounds: bounds,
-                maxBoundsViscosity: 1.0,
-                minZoom: 2
+                minZoom: 1
             }).setView([20, 0], 2); // Matikan zoomControl default supaya tidak mengganggu
             L.control.zoom({ position: 'bottomleft' }).addTo(map); // Pindahkan ke kiri bawah
 
@@ -727,8 +721,7 @@
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
                 subdomains: 'abcd',
-                maxZoom: 20,
-                noWrap: true
+                maxZoom: 20
             }).addTo(map);
         }
 
