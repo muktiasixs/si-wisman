@@ -421,7 +421,7 @@
         var table = $('#wisatawanTable').DataTable({
             processing: true,
             pageLength: 10,
-            ajax: "{{ route('dashboard.datatable') }}",
+            ajax: "/api/datatable",
             columns: [
                 { data: 'no' },
                 { data: 'nama_negara' },
@@ -460,7 +460,7 @@
             e.preventDefault();
             $('#btnSave').text('Saving...').prop('disabled', true);
             $.ajax({
-                url: "{{ route('dashboard.update') }}",
+                url: "/api/update",
                 type: "POST",
                 data: $(this).serialize(),
                 success: function(res) {
@@ -482,7 +482,7 @@
             e.preventDefault();
             $('#btnAddSave').text('Menambahkan...').prop('disabled', true);
             $.ajax({
-                url: "{{ route('dashboard.store') }}",
+                url: "/api/store",
                 type: "POST",
                 data: $(this).serialize(),
                 success: function(res) {
@@ -515,7 +515,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "{{ route('dashboard.delete') }}",
+                        url: "/api/delete",
                         type: "POST",
                         data: { id_negara: id },
                         success: function(res) {
@@ -567,7 +567,7 @@
             $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
 
             $.ajax({
-                url: "{{ route('dashboard.chat') }}",
+                url: "/api/chat",
                 type: "POST",
                 data: { question: input },
                 success: function(res) {
@@ -733,7 +733,7 @@
         }
 
         $.ajax({
-            url: "{{ route('dashboard.geomap') }}",
+            url: "/api/geomap",
             type: "GET",
             dataType: "json",
             success: function (resData) {
