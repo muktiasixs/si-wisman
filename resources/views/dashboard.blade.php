@@ -659,6 +659,7 @@
                 plotOptions: {
                     column: {
                         borderRadius: 4,
+                        borderWidth: 0,
                         color: '#0f4a8a',
                         dataLabels: { enabled: true, format: '{y:,.0f}' }
                     }
@@ -686,6 +687,7 @@
                     pie: {
                         allowPointSelect: true,
                         cursor: 'pointer',
+                        borderWidth: 0,
                         colors: ['#0f4a8a', '#1e3a8a', '#3b82f6', '#93c5fd', '#f59e0b'],
                         dataLabels: {
                             enabled: true,
