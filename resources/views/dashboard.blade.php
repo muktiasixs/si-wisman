@@ -774,15 +774,21 @@
                 attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
                 subdomains: 'abcd',
                 maxZoom: 20,
-                minZoom: 1,
                 noWrap: true
             }).addTo(map);
             
-            map.fitBounds(bounds);
+            // Set batas zoom minimum agar tidak bisa zoom out lebih dari ukuran kotak
+            function adjustMap() {
+                map.setMinZoom(0); // Reset sementara
+                map.fitBounds(bounds);
+                map.setMinZoom(map.getZoom()); // Kunci batas zoom out
+            }
+            
+            adjustMap();
             
             // Auto resize jika layar berubah
             $(window).on('resize', function() {
-                map.fitBounds(bounds);
+                adjustMap();
             });
         }
 
