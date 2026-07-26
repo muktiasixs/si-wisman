@@ -21,6 +21,16 @@ try {
         }
     }
 
+    // Tell Laravel to use /tmp/storage before it boots
+    $_ENV['APP_STORAGE'] = $storage;
+    $_SERVER['APP_STORAGE'] = $storage;
+    putenv("APP_STORAGE={$storage}");
+
+    // Also tell Laravel where the compiled views are
+    $_ENV['VIEW_COMPILED_PATH'] = $storage.'/framework/views';
+    $_SERVER['VIEW_COMPILED_PATH'] = $storage.'/framework/views';
+    putenv("VIEW_COMPILED_PATH={$storage}/framework/views");
+
     $app = require_once __DIR__.'/../bootstrap/app.php';
     $app->useStoragePath($storage);
 
