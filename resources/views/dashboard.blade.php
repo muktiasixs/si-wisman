@@ -110,6 +110,35 @@
     </style>
 </head>
 <body>
+<!-- Global Skeleton Loader -->
+<div id="globalSkeleton" class="position-fixed w-100 h-100 bg-light" style="top:0; left:0; z-index:9999; overflow-y: hidden;">
+    <!-- Navbar Skeleton -->
+    <div class="bg-white border-bottom shadow-sm py-2 px-3 mb-4 d-flex align-items-center">
+        <div class="skeleton rounded-circle me-3" style="width: 40px; height: 40px;"></div>
+        <div>
+            <div class="skeleton skeleton-text rounded mb-1" style="width: 150px; height: 16px;"></div>
+            <div class="skeleton skeleton-text rounded" style="width: 200px; height: 12px;"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Top Cards Skeleton -->
+        <div class="row mb-4">
+            <div class="col-md-4"><div class="skeleton rounded" style="height: 100px;"></div></div>
+            <div class="col-md-4"><div class="skeleton rounded" style="height: 100px;"></div></div>
+            <div class="col-md-4"><div class="skeleton rounded" style="height: 100px;"></div></div>
+        </div>
+        
+        <!-- Map Skeleton -->
+        <div class="skeleton rounded mb-4" style="height: 500px;"></div>
+        
+        <!-- Charts Skeleton -->
+        <div class="row">
+            <div class="col-lg-7"><div class="skeleton rounded" style="height: 350px;"></div></div>
+            <div class="col-lg-5"><div class="skeleton rounded" style="height: 350px;"></div></div>
+        </div>
+    </div>
+</div>
 
 <!-- Corporate Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
@@ -182,20 +211,10 @@
                 <option value="afrika">Afrika</option>
                 <option value="oseania">Oseania</option>
             </select>
-        <div class="card-body p-0 position-relative">
-            <!-- Skeleton Loader -->
-            <div id="mapSkeleton" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center bg-light" style="z-index: 1000; border-bottom-left-radius: 12px;">
-                <div class="text-center">
-                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <h5 class="text-secondary fw-bold">Memuat Data Peta...</h5>
-                </div>
-            </div>
-            
+        <div class="card-body p-0">
             <div class="row g-0">
                 <div class="col-lg-8 border-end">
-                    <div id="geomap" style="opacity: 0; transition: opacity 0.5s ease-in-out;"></div>
+                    <div id="geomap"></div>
                 </div>
                 <div class="col-lg-4 bg-light d-flex flex-column" style="border-bottom-right-radius: 12px;">
                     <div class="p-4 flex-grow-1">
@@ -959,6 +978,15 @@
         if(map) {
             map.invalidateSize();
         }
+    });
+
+    // Hide Global Skeleton when all AJAX requests complete
+    $(document).ajaxStop(function() {
+        setTimeout(function() {
+            $('#globalSkeleton').fadeOut(600, function() {
+                $(this).remove();
+            });
+        }, 500); // Beri sedikit jeda agar transisi terasa smooth
     });
 </script>
 </body>
