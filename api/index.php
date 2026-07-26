@@ -12,7 +12,8 @@ try {
         $storage.'/framework/cache/data',
         $storage.'/framework/views',
         $storage.'/framework/sessions',
-        $storage.'/logs'
+        $storage.'/logs',
+        $storage.'/bootstrap/cache'
     ];
 
     foreach ($directories as $dir) {
@@ -33,6 +34,7 @@ try {
 
     $app = require_once __DIR__.'/../bootstrap/app.php';
     $app->useStoragePath($storage);
+    $app->useBootstrapPath($storage.'/bootstrap');
 
 $app->handleRequest(Illuminate\Http\Request::capture());
 } catch (\Throwable $e) {
